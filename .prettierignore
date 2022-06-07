@@ -1,0 +1,14 @@
+**/*.png
+**/*.svg
+package.json
+package-lock.json
+node_modules/
+lib/
+es/
+build/
+public/
+yarn.lock
+.gitignore
+.prettierignore
+.prettierrc
+README.md
