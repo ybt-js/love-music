@@ -1,22 +1,31 @@
 import React from 'react';
-import Scroll from '../../common/Scroll';
-import api from '../../service/api';
+import Scroll from 'common/Scroll';
+// import api from '../../service/api';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  fetchHotSong,
+  fetchNewSong,
+} from './recommendSlice';
+
+import Songs from './children/Songs';
 
 function Recommend() {
-  const [data, setData] = React.useState([]);
+  const { hotSong, newSong } = useSelector(state => ({
+    hotSong: state.recommend.hotSong,
+    newSong: state.recommend.newSong,
+  }));
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    api.fetchHotSong().then(res => {
-      setData(res.playlist.tracks);
-    });
-  }, []);
+    dispatch(fetchHotSong());
+    dispatch(fetchNewSong());
+  }, [dispatch]);
+
   return (
     <div>
       <Scroll>
-        <div>
-          {data.map(item => (
-            <h3 key={item.id}>{item.name}</h3>
-          ))}
-        </div>
+        <Songs title="热歌推荐" playlist={hotSong} />
+        <Songs title="新歌推荐" playlist={newSong} />
       </Scroll>
     </div>
   );

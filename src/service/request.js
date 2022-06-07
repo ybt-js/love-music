@@ -1,24 +1,24 @@
-import qs from "qs";
+import qs from 'qs';
 
-const isProd = process.env.NODE_ENV === "production";
-const BASE_URL = isProd ? "http://120.24.7.120" : "/api";
+const isProd = process.env.NODE_ENV === 'production';
+const BASE_URL = isProd ? 'http://120.24.7.120' : '/api';
 
 class Request {
   async _request(url, data, options) {
     const config = {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       ...options,
     };
 
     url = BASE_URL + url;
-    if (config.method === "GET") {
+    if (config.method === 'GET') {
       if (data) {
         url += `?${qs.stringify(data)}`;
       }
-    } else if (config.method === "POST") {
+    } else if (config.method === 'POST') {
       config.body = JSON.stringify(data);
     }
 
@@ -35,7 +35,7 @@ class Request {
   }
 
   post(url, data, options) {
-    return this._request(url, data, { ...options, method: "POST" });
+    return this._request(url, data, { ...options, method: 'POST' });
   }
 }
 
