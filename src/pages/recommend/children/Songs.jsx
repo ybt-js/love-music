@@ -1,26 +1,47 @@
 import React from 'react';
 import styled from 'styled-components';
-import { handleImageSize } from '@/utils'
+import { handleImageSize, handlePlayCount } from '@/utils';
 
 function Songs(props) {
-  const { title, playlist } = props;
-  //todo 下拉刷新展示的歌曲
+  const { title, playlist, showMore = true, count = 6 } = props;
   return (
     <SongsWrap>
       <div className="top-title">
         <h2 name="title">{title}</h2>
-        <div className="more">
-          <span>更多</span>
-          <span className="iconfont">&#xe600;</span>
-        </div>
+        {showMore && (
+          <div
+            className="more"
+            onClick={() => {
+              //todo 跳转到歌单列表
+            }}
+          >
+            <span>更多</span>
+            <span className="iconfont">&#xe600;</span>
+          </div>
+        )}
       </div>
       <div className="song-list">
-        {playlist.slice(0, 6).map(song => (
-          <div className="list-item" key={song.id}>
+        {playlist.slice(0, count).map(song => (
+          <div
+            className="list-item"
+            key={song.id}
+            onClick={() => {
+              //todo 跳转到歌单列表 or 播放歌曲
+            }}
+          >
+            {song.playCount && (
+              <div className="play-count">
+                <span className="iconfont">&#xe604;</span>
+                <span className="count">{handlePlayCount(song.playCount)}</span>
+              </div>
+            )}
             <div className="img-box">
-              <img src={handleImageSize(song.al.picUrl, 200)} alt="" />
+              <img
+                src={handleImageSize(song.al?.picUrl || song.picUrl, 200)}
+                alt=""
+              />
             </div>
-            <h3>{song.name}</h3>
+            <p className="name">{song.name}</p>
           </div>
         ))}
       </div>
@@ -31,6 +52,7 @@ function Songs(props) {
 export default Songs;
 
 const SongsWrap = styled.div`
+  min-height: 310px;
   padding: 0 5%;
   margin-bottom: 10px;
   // text-align: center;
@@ -63,6 +85,25 @@ const SongsWrap = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
 
+    .play-count {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      color: #fff;
+      font-size: 12px;
+      font-style: normal;
+      border-radius: 12px;
+      padding: 0 8px;
+      background-color: rgba(0, 0, 0, 0.3);
+
+      .iconfont {
+        padding-right: 2px;
+        font-size: 12px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    }
+
     .list-item {
       width: 30%;
       text-align: left;
@@ -78,7 +119,7 @@ const SongsWrap = styled.div`
         }
       }
 
-      h3 {
+      .name {
         color: #fff;
         font-size: 12px;
         padding: 5px 0 10px 0;
