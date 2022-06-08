@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { handleImageSize, handlePlayCount } from '@/utils';
+import React from "react";
+import styled from "styled-components";
+import { handleImageSize, handlePlayCount } from "@/utils";
 
 function Songs(props) {
   const { title, playlist, showMore = true, count = 6 } = props;

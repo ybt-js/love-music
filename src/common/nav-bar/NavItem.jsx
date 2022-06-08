@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 function NavItem(props) {
   const location = useLocation();
@@ -13,10 +13,10 @@ function NavItem(props) {
 
   return (
     <NavItemWrap onClick={() => navigate(props.link)}>
-      <div className={'icon ' + (isActive ? 'icon-active' : '')}>
+      <div className={"icon " + (isActive ? "icon-active" : "")}>
         <div className="iconfont">{props.icon}</div>
       </div>
-      <div className={isActive ? 'title-active' : ''}>
+      <div className={isActive ? "title-active" : ""}>
         <span className="title">{props.title}</span>
       </div>
     </NavItemWrap>

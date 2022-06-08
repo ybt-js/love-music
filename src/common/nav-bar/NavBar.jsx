@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import NavItem from './NavItem';
+import React from "react";
+import styled from "styled-components";
+import NavItem from "./NavItem";
 
 function NavBar() {
   return (

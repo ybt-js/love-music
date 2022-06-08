@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import RecommendSlice from '@/pages/recommend/recommendSlice';
+import RecommendSlice from "@/pages/recommend/recommendSlice";
 
 const rootReducer = combineReducers({
   recommend: RecommendSlice,

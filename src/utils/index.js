@@ -14,7 +14,7 @@ export function handlePlayCount(count) {
 
 export function debounce(func, delay) {
   let timer = null;
-  return function(...args) {
+  return function (...args) {
     if (timer) {
       clearTimeout(timer);
     }

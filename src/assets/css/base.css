@@ -56,16 +56,16 @@ input {
   outline-style: none;
   /* "\5B8B\4F53" 就是宋体的意思 这样浏览器兼容性比较好 */
   font-family: Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB,
-    '\5B8B\4F53', sans-serif;
+    "\5B8B\4F53", sans-serif;
 }
 
 body {
   /* CSS3 抗锯齿形 让文字显示的更加清晰 */
   -webkit-font-smoothing: antialiased;
-  background: url('../img/bg.jpg');
+  background: url("../img/bg.jpg");
   background-size: 100% 100%;
   font: 12px/1.5 Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB,
-    '\5B8B\4F53', sans-serif;
+    "\5B8B\4F53", sans-serif;
   color: #d4d5d7;
 }
 

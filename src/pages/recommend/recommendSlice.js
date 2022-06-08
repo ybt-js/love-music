@@ -7,7 +7,7 @@ export const fetchHotSong = createAsyncThunk(
   async () => {
     const response = await api.fetchHotSong();
     return response.playlist.tracks;
-  }
+  },
 );
 
 export const fetchNewSong = createAsyncThunk(
@@ -15,20 +15,20 @@ export const fetchNewSong = createAsyncThunk(
   async () => {
     const response = await api.fetchNewSong();
     return response.playlist.tracks;
-  }
+  },
 );
 
 export const fetchSongList = createAsyncThunk(
   "recommend/fetchSongList",
-  async (limit) => {
+  async limit => {
     const response = await api.fetchRecommendPlaylist(limit);
     return response.result;
-  }
+  },
 );
 
 export const fetchMoreSongList = createAsyncThunk(
   "recommend/fetchMoreSongList",
-  async (limit) => {}
+  async limit => {},
 );
 
 export const recommendSlice = createSlice({
@@ -43,7 +43,7 @@ export const recommendSlice = createSlice({
       state.songList = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(fetchHotSong.fulfilled, (state, action) => {
       state.hotSong = action.payload;
     });
