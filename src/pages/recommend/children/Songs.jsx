@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { handleImageSize, handlePlayCount } from "@/utils";
 
 function Songs(props) {
-  const { title, playlist, showMore = true, count = 6 } = props;
+  const { title, playlist, showMore = true, count = 6, onLoaded } = props;
   return (
     <SongsWrap>
       <div className="top-title">
@@ -38,7 +38,9 @@ function Songs(props) {
             <div className="img-box">
               <img
                 src={handleImageSize(song.al?.picUrl || song.picUrl, 200)}
+                onLoad={() => { onLoaded?.() }}
                 alt=""
+                loading='lazy'
               />
             </div>
             <p className="name">{song.name}</p>

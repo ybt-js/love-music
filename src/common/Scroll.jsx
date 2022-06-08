@@ -1,8 +1,9 @@
 import {
+  useState,
   useEffect,
   useRef,
   forwardRef,
-  useCallback,
+  useMemo,
   useImperativeHandle,
 } from "react";
 import BScroll from "@better-scroll/core";
@@ -14,98 +15,117 @@ BScroll.use(PullUp);
 BScroll.use(PullDown);
 
 function Scroll(props, ref) {
-  let wrapper = null;
-  const scroll = useRef();
+  const wrapperRef = useRef();
+  const [bScroll, setBScroll] = useState(null)
 
   const {
     probeType = 0,
     pullUpLoad = false,
-    PullDownRefresh = false,
+    pullDownRefresh = false,
+    useTransition = false,
+    threshold,
+    stop,
     pullUp,
     pullDown,
     handleScroll,
     handleScrollEnd,
+
   } = props;
 
+  //初始化BetterScroll
   useEffect(() => {
-    scroll.current = new BScroll(wrapper, {
+    const bScroll = new BScroll(wrapperRef.current, {
       probeType,
       pullUpLoad,
-      PullDownRefresh,
+      pullDownRefresh,
+      useTransition
     });
+    setBScroll(bScroll)
 
     return () => {
-      scroll.current?.destroy();
+      bScroll.destroy();
+      setBScroll(null)
     };
-    // eslint-disable-next-line
-  }, [probeType, pullUpLoad, PullDownRefresh]);
+  }, [probeType, pullUpLoad, pullDownRefresh]);
 
-  const handlePullUp = useCallback(() => {
-    const debouncePullUp = debounce(pullUp, 300);
-    debouncePullUp(() => {
-      const bs = scroll.current;
-      if (!bs) return;
-      bs.finishPullUp();
-      bs.refresh();
-    });
+  const handlePullUp = useMemo(() => {
+    return debounce(pullUp, 300)
   }, [pullUp]);
 
-  const handlePullDown = useCallback(() => {
-    const debouncePullDown = debounce(pullDown, 300);
-    debouncePullDown(() => {
-      const bs = scroll.current;
-      if (!bs) return;
-      bs.finishPullDown();
-      bs.refresh();
-    });
+  const handlePullDown = useMemo(() => {
+    return debounce(pullDown, 300)
   }, [pullDown]);
 
+  // 上拉加载
   useEffect(() => {
-    const bs = scroll.current;
-    if (!bs) return;
-    bs.finishPullUp && bs.off("pullingUp", handlePullUp);
-    // bs.pullingDown && bs.off("pullingDown", handlePullDown);
+    if (!bScroll?.finishPullUp) return;
 
-    bs.finishPullUp && bs.once("pullingUp", handlePullUp);
-    // bs.pullingDown && bs.on("pullingDown", handlePullDown);
-  }, [handlePullUp]);
-
-  useEffect(() => {
-    const bs = scroll.current;
-    if (!bs) return;
-    bs.on("scroll", handleScroll);
-    bs.on("scrollEnd", handleScrollEnd);
+    bScroll.on("pullingUp", () => {
+      handlePullUp(() => {
+        console.log('上拉');
+        bScroll.finishPullUp();
+        bScroll.refresh();
+      });
+    });
 
     return () => {
-      bs.off("scroll", handleScroll);
-      bs.off("scrollEnd", handleScrollEnd);
+      bScroll.off("pullingUp");
+    }
+  }, [bScroll, handlePullUp]);
+
+  //下拉刷新
+  useEffect(() => {
+    if (!bScroll?.finishPullDown) return
+
+    bScroll.on("pullingDown", () => {
+      handlePullDown(() => {
+        console.log('下拉');
+        bScroll.finishPullDown();
+        bScroll.refresh();
+      })
+    });
+
+    bScroll.on("enterThreshold", () => {
+      //todo 显示下拉刷新
+    })
+
+    bScroll.on('leaveThreshold', () => {
+      //todo 显示松手刷新
+    })
+
+    return () => {
+      bScroll.off("pullingDown");
+    }
+  }, [bScroll, handlePullDown])
+
+  useEffect(() => {
+    if (!bScroll) return;
+    bScroll.on("scroll", handleScroll);
+    bScroll.on("scrollEnd", handleScrollEnd);
+
+    return () => {
+      bScroll.off("scroll");
+      bScroll.off("scrollEnd");
     };
-  }, [handleScroll, handleScrollEnd]);
+  }, [bScroll, handleScroll, handleScrollEnd]);
 
   useImperativeHandle(ref, () => {
-    const bs = scroll.current;
     return {
       refresh: () => {
-        bs?.refresh();
-      },
-      finishPullUp: () => {
-        console.log("finishPullUp");
-        bs?.finishPullUp();
-      },
-      finishPullDown: () => {
-        bs?.finishPullDown();
+        console.log('refresh');
+        bScroll?.refresh();
       },
       scrollTo: (x, y, time) => {
-        bs?.scrollTo(x, y, time);
+        bScroll?.scrollTo(x, y, time);
       },
       scrollToElement: (ele, time) => {
-        bs?.scrollToElement(ele, time);
+        bScroll?.scrollToElement(ele, time);
       },
     };
   });
 
   return (
-    <div className="wrapper" ref={el => (wrapper = el)}>
+    <div className="wrapper" ref={wrapperRef}>
       <div className="content">{props.children}</div>
     </div>
   );

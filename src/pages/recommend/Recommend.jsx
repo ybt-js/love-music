@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -9,13 +9,14 @@ import {
 } from "./recommendSlice";
 
 import api from "@/service/api";
-
+import { debounce } from '@/utils'
 import Scroll from "common/Scroll";
 import Songs from "./children/Songs";
-import { debounce } from "@/utils";
+import PullDownLoading from "common/PullDownLoading";
 
 function Recommend() {
   const bsRef = useRef();
+  const [isLoading, setLoading] = useState(false)
   const { hotSong, newSong, songList } = useSelector(state => ({
     hotSong: state.recommend.hotSong,
     newSong: state.recommend.newSong,
@@ -30,28 +31,39 @@ function Recommend() {
   }, [dispatch]);
 
   const loadMoreData = async finishPullUp => {
+    setLoading(true)
     console.log("startPullUp");
     if (songList.length === 99) return;
     let limit = Math.min(99, songList.length + 33);
-    dispatch(fetchSongList(limit));
+    // dispatch(fetchSongList(limit));
+    const response = await api.fetchRecommendPlaylist(limit)
+    dispatch(changeSongList(response.result))
     finishPullUp();
+    setLoading(false)
   };
 
-  const refreshData = finishPullDown => {
+  const refreshData = (finishPullDown) => {
     console.log("startPullDown");
 
     finishPullDown();
   };
 
+  const handleLoaded = useMemo(() => {
+    return debounce(() => {
+      bsRef.current.refresh()
+    }, 300)
+  }, [])
+
   return (
     <Scroll
       ref={bsRef}
-      pullUpLoad
-      PullDownRefresh
       probeType={3}
       pullUp={loadMoreData}
       pullDown={refreshData}
+      pullUpLoad
+      pullDownRefresh
     >
+      <PullDownLoading />
       <Songs title="热歌推荐" playlist={hotSong} />
       <Songs title="新歌推荐" playlist={newSong} />
       <Songs
@@ -60,7 +72,13 @@ function Recommend() {
         showMore={false}
         count={songList.length}
         data={songList}
+        onLoaded={handleLoaded}
       />
+      {
+        isLoading && <p style={{ textAlign: "center", height: 30, lineHeight: '30px' }}>{
+          songList.length === 99 ? '已经到底啦 ~\\(≧▽≦)/~' : '正在加载.....'
+        }</p>
+      }
     </Scroll>
   );
 }
