@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -14,9 +14,16 @@ import Scroll from "common/Scroll";
 import Songs from "./children/Songs";
 import PullDownLoading from "common/PullDownLoading";
 
+const promise = () => {
+  return new Promise(resolve => {
+    setTimeout(resolve, 800)
+  })
+}
+
 function Recommend() {
   const bsRef = useRef();
   const [isLoading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(false)
   const { hotSong, newSong, songList } = useSelector(state => ({
     hotSong: state.recommend.hotSong,
     newSong: state.recommend.newSong,
@@ -32,7 +39,6 @@ function Recommend() {
 
   const loadMoreData = async finishPullUp => {
     setLoading(true)
-    console.log("startPullUp");
     if (songList.length === 99) return;
     let limit = Math.min(99, songList.length + 33);
     // dispatch(fetchSongList(limit));
@@ -42,10 +48,16 @@ function Recommend() {
     setLoading(false)
   };
 
-  const refreshData = (finishPullDown) => {
-    console.log("startPullDown");
+  const succeed = useCallback(() => {
+    setFetching(false)
+  }, [setFetching])
 
-    finishPullDown();
+  const refreshData = async (finishPullDown) => {
+    console.log("startPullDown");
+    setFetching(true)
+    //todo 刷新歌单
+    await promise()
+    finishPullDown(succeed);
   };
 
   const handleLoaded = useMemo(() => {
@@ -63,7 +75,7 @@ function Recommend() {
       pullUpLoad
       pullDownRefresh
     >
-      <PullDownLoading />
+      <PullDownLoading loading={fetching} />
       <Songs title="热歌推荐" playlist={hotSong} />
       <Songs title="新歌推荐" playlist={newSong} />
       <Songs

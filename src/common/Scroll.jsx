@@ -23,8 +23,6 @@ function Scroll(props, ref) {
     pullUpLoad = false,
     pullDownRefresh = false,
     useTransition = false,
-    threshold,
-    stop,
     pullUp,
     pullDown,
     handleScroll,
@@ -46,7 +44,8 @@ function Scroll(props, ref) {
       bScroll.destroy();
       setBScroll(null)
     };
-  }, [probeType, pullUpLoad, pullDownRefresh]);
+    // eslint-disable-next-line
+  }, []);
 
   const handlePullUp = useMemo(() => {
     return debounce(pullUp, 300)
@@ -78,10 +77,12 @@ function Scroll(props, ref) {
     if (!bScroll?.finishPullDown) return
 
     bScroll.on("pullingDown", () => {
-      handlePullDown(() => {
+      handlePullDown((fn) => {
         console.log('下拉');
         bScroll.finishPullDown();
+        fn(false)
         bScroll.refresh();
+
       })
     });
 
