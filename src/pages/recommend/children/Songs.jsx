@@ -1,9 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import { handleImageSize, handlePlayCount } from "@/utils";
+import { handleImageSize, formatPlayCount } from "@/utils";
 
 function Songs(props) {
-  const { title, playlist, showMore = true, count = 6, onLoaded } = props;
+  const {
+    title,
+    playlist,
+    showMore = true,
+    onImgLoaded,
+    // eslint-disable-next-line
+    clickMore,
+    clickSong,
+  } = props;
+
   return (
     <SongsWrap>
       <div className="top-title">
@@ -21,7 +30,7 @@ function Songs(props) {
         )}
       </div>
       <div className="song-list">
-        {playlist.slice(0, count).map(song => (
+        {playlist.map(song => (
           <div
             className="list-item"
             key={song.id}
@@ -32,15 +41,17 @@ function Songs(props) {
             {song.playCount && (
               <div className="play-count">
                 <span className="iconfont">&#xe604;</span>
-                <span className="count">{handlePlayCount(song.playCount)}</span>
+                <span className="count">{formatPlayCount(song.playCount)}</span>
               </div>
             )}
             <div className="img-box">
               <img
                 src={handleImageSize(song.al?.picUrl || song.picUrl, 200)}
-                onLoad={() => { onLoaded?.() }}
+                onLoad={() => {
+                  onImgLoaded?.();
+                }}
                 alt=""
-                loading='lazy'
+                loading="lazy"
               />
             </div>
             <p className="name">{song.name}</p>

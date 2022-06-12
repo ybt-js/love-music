@@ -35,7 +35,7 @@ const NavItemWrap = styled.div`
   .icon {
     width: 23px;
     height: 23px;
-    border: 1px solid #58595e;
+    border: 1px solid var(--tab-text-color);
     line-height: 25px;
     text-align: center;
     border-radius: 50%;
@@ -45,11 +45,11 @@ const NavItemWrap = styled.div`
     width: 25px;
     height: 25px;
     border: 0;
-    color: #272731;
-    background-color: #38c6f4;
+    color: var(--tab-bg-color);
+    background-color: var(--theme-color);
     transition: color 0.4s;
   }
   .title-active {
-    color: #dbe0e6;
+    color: var(--text-color);
   }
 `;

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-function Loading() {
+function FullLoading() {
   return (
-    <LoadingWrap>
+    <Wrap>
       <div className="content">
         <div className="load">
           {[1, 2, 3].map((item, index) => (
@@ -13,13 +13,13 @@ function Loading() {
           <h3>正在加载...</h3>
         </div>
       </div>
-    </LoadingWrap>
+    </Wrap>
   );
 }
 
-export default Loading;
+export default FullLoading;
 
-const LoadingWrap = styled.div`
+const Wrap = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -35,10 +35,10 @@ const LoadingWrap = styled.div`
       display: inline-block;
       width: 3px;
       height: 20px;
-      background: #ffffff;
+      background: #fff;
       border-radius: 5px;
       margin: 0 2px;
-      color: #ffffff;
+      color: #fff;
 
       &:nth-child(1) {
         animation: loading-1 0.8s linear infinite;

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import api from "@/service/api";
+import api from "@/service";
 
 export const fetchHotSong = createAsyncThunk(
   "recommend/fetchHotSong",

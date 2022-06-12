@@ -14,9 +14,9 @@ import { debounce } from "@/utils";
 BScroll.use(PullUp);
 BScroll.use(PullDown);
 
-function Scroll(props, ref) {
+const Scroll = forwardRef((props, ref) => {
   const wrapperRef = useRef();
-  const [bScroll, setBScroll] = useState(null)
+  const [bScroll, setBScroll] = useState(null);
 
   const {
     probeType = 0,
@@ -27,7 +27,8 @@ function Scroll(props, ref) {
     pullDown,
     handleScroll,
     handleScrollEnd,
-
+    enterThreshold,
+    leaveThreshold,
   } = props;
 
   //初始化BetterScroll
@@ -36,24 +37,32 @@ function Scroll(props, ref) {
       probeType,
       pullUpLoad,
       pullDownRefresh,
-      useTransition
+      useTransition,
     });
-    setBScroll(bScroll)
+    setBScroll(bScroll);
 
     return () => {
       bScroll.destroy();
-      setBScroll(null)
+      setBScroll(null);
     };
     // eslint-disable-next-line
   }, []);
 
   const handlePullUp = useMemo(() => {
-    return debounce(pullUp, 300)
+    return debounce(pullUp, 300);
   }, [pullUp]);
 
   const handlePullDown = useMemo(() => {
-    return debounce(pullDown, 300)
+    return debounce(pullDown, 300);
   }, [pullDown]);
+
+  const handleEnterThreshold = useMemo(() => {
+    return debounce(enterThreshold, 300);
+  }, [enterThreshold]);
+
+  const handleLeaveThreshold = useMemo(() => {
+    return debounce(leaveThreshold, 300);
+  }, [leaveThreshold]);
 
   // 上拉加载
   useEffect(() => {
@@ -61,7 +70,7 @@ function Scroll(props, ref) {
 
     bScroll.on("pullingUp", () => {
       handlePullUp(() => {
-        console.log('上拉');
+        console.log("上拉");
         bScroll.finishPullUp();
         bScroll.refresh();
       });
@@ -69,35 +78,35 @@ function Scroll(props, ref) {
 
     return () => {
       bScroll.off("pullingUp");
-    }
+    };
   }, [bScroll, handlePullUp]);
 
   //下拉刷新
   useEffect(() => {
-    if (!bScroll?.finishPullDown) return
+    if (!bScroll?.finishPullDown) return;
 
     bScroll.on("pullingDown", () => {
-      handlePullDown((fn) => {
-        console.log('下拉');
+      handlePullDown(fn => {
+        console.log("下拉");
         bScroll.finishPullDown();
-        fn(false)
-        bScroll.refresh();
-
-      })
+        // BScroll 配置项bounceTime默认为800, 等待bounceAnimation然后刷新
+        setTimeout(() => {
+          fn?.();
+          bScroll.refresh();
+        }, 850);
+      });
     });
 
-    bScroll.on("enterThreshold", () => {
-      //todo 显示下拉刷新
-    })
+    bScroll.on("enterThreshold", handleEnterThreshold);
 
-    bScroll.on('leaveThreshold', () => {
-      //todo 显示松手刷新
-    })
+    bScroll.on("leaveThreshold", handleLeaveThreshold);
 
     return () => {
       bScroll.off("pullingDown");
-    }
-  }, [bScroll, handlePullDown])
+      bScroll.off("enterThreshold");
+      bScroll.off("leaveThreshold");
+    };
+  }, [bScroll, handlePullDown, handleEnterThreshold, handleLeaveThreshold]);
 
   useEffect(() => {
     if (!bScroll) return;
@@ -113,7 +122,7 @@ function Scroll(props, ref) {
   useImperativeHandle(ref, () => {
     return {
       refresh: () => {
-        console.log('refresh');
+        console.log("refresh");
         bScroll?.refresh();
       },
       scrollTo: (x, y, time) => {
@@ -126,10 +135,12 @@ function Scroll(props, ref) {
   });
 
   return (
-    <div className="wrapper" ref={wrapperRef}>
+    <div style={{ height: "100%", overflow: "hidden" }} ref={wrapperRef}>
       <div className="content">{props.children}</div>
     </div>
   );
-}
+});
 
-export default forwardRef(Scroll);
+Scroll.displayName = "Scroll";
+
+export default Scroll;

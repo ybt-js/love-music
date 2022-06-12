@@ -1,36 +1,34 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchHotSong, fetchNewSong, fetchSongList } from "./recommendSlice";
 
-import {
-  fetchHotSong,
-  fetchNewSong,
-  fetchSongList,
-  changeSongList,
-} from "./recommendSlice";
-
-import api from "@/service/api";
-import { debounce } from '@/utils'
-import Scroll from "common/Scroll";
+import { debounce } from "@/utils";
+import { Scroll, PullDownLoading } from "@/common";
 import Songs from "./children/Songs";
-import PullDownLoading from "common/PullDownLoading";
 
 const promise = () => {
   return new Promise(resolve => {
-    setTimeout(resolve, 800)
-  })
-}
+    setTimeout(resolve, 800);
+  });
+};
+
+const DISPLAY_COUNT = 6;
+const MAX_LIMIT = 99;
 
 function Recommend() {
   const bsRef = useRef();
-  const [isLoading, setLoading] = useState(false)
-  const [fetching, setFetching] = useState(false)
+  const [hotNum, setHotNum] = useState(0);
+  const [newNum, setNewNum] = useState(0);
+  const [isLoading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [succeed, setSucceed] = useState(false);
   const { hotSong, newSong, songList } = useSelector(state => ({
     hotSong: state.recommend.hotSong,
     newSong: state.recommend.newSong,
     songList: state.recommend.songList,
   }));
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHotSong());
     dispatch(fetchNewSong());
@@ -38,33 +36,49 @@ function Recommend() {
   }, [dispatch]);
 
   const loadMoreData = async finishPullUp => {
-    setLoading(true)
-    if (songList.length === 99) return;
-    let limit = Math.min(99, songList.length + 33);
-    // dispatch(fetchSongList(limit));
-    const response = await api.fetchRecommendPlaylist(limit)
-    dispatch(changeSongList(response.result))
+    setLoading(true);
+    if (songList.length === MAX_LIMIT) return;
+    let limit = Math.min(MAX_LIMIT, songList.length + 33);
+    dispatch(fetchSongList(limit));
     finishPullUp();
-    setLoading(false)
+    setLoading(false);
   };
 
-  const succeed = useCallback(() => {
-    setFetching(false)
-  }, [setFetching])
+  // eslint-disable-next-line
+  const changeFetching = useCallback(() => {
+    setFetching(false);
+  }, [setFetching]);
 
-  const refreshData = async (finishPullDown) => {
-    console.log("startPullDown");
-    setFetching(true)
-    //todo 刷新歌单
-    await promise()
-    finishPullDown(succeed);
+  const refreshData = async finishPullDown => {
+    setFetching(true);
+    await promise();
+    setHotNum(num => {
+      let value = num + DISPLAY_COUNT;
+      if (num + DISPLAY_COUNT > hotSong.length) {
+        value = 0;
+      }
+      return value;
+    });
+    setNewNum(num => {
+      let value = num + DISPLAY_COUNT;
+      if (num + DISPLAY_COUNT > newNum.length) {
+        value = 0;
+      }
+      return value;
+    });
+    setFetching(false);
+    setSucceed(true);
+    // 保证二次下拉显示的是动画
+    finishPullDown(() => {
+      setSucceed(false);
+    });
   };
 
-  const handleLoaded = useMemo(() => {
+  const handleImgLoaded = useMemo(() => {
     return debounce(() => {
-      bsRef.current.refresh()
-    }, 300)
-  }, [])
+      bsRef.current.refresh();
+    }, 300);
+  }, []);
 
   return (
     <Scroll
@@ -75,22 +89,27 @@ function Recommend() {
       pullUpLoad
       pullDownRefresh
     >
-      <PullDownLoading loading={fetching} />
-      <Songs title="热歌推荐" playlist={hotSong} />
-      <Songs title="新歌推荐" playlist={newSong} />
+      <PullDownLoading loading={fetching} succeed={succeed} />
+      <Songs
+        title="热歌推荐"
+        playlist={hotSong.slice(hotNum, hotNum + DISPLAY_COUNT)}
+      />
+      <Songs
+        title="新歌推荐"
+        playlist={newSong.slice(newNum, newNum + DISPLAY_COUNT)}
+      />
       <Songs
         title="精选歌单"
         playlist={songList}
         showMore={false}
-        count={songList.length}
         data={songList}
-        onLoaded={handleLoaded}
+        onImgLoaded={handleImgLoaded}
       />
-      {
-        isLoading && <p style={{ textAlign: "center", height: 30, lineHeight: '30px' }}>{
-          songList.length === 99 ? '已经到底啦 ~\\(≧▽≦)/~' : '正在加载.....'
-        }</p>
-      }
+      {isLoading && (
+        <p style={{ textAlign: "center", height: 30, lineHeight: "30px" }}>
+          {songList.length === 99 ? "已经到底啦 ~\\(≧▽≦)/~" : "正在加载....."}
+        </p>
+      )}
     </Scroll>
   );
 }

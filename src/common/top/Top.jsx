@@ -26,7 +26,7 @@ const Header = styled.header`
   height: 44px;
   line-height: 44px;
   text-align: center;
-  // background: $main-bg;
+  // background: var(--main-bg-color);
   z-index: 10;
   .content {
     height: 100%;
@@ -40,7 +40,7 @@ const Header = styled.header`
       }
       h1 {
         font-size: 16px;
-        color: #38c6f4;
+        color: var(--theme-color);
       }
     }
     .search {

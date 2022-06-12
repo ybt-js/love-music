@@ -1,17 +1,17 @@
 import { Suspense } from "react";
 import Routes from "./router";
 
-import Top from "./common/Top";
-import NavBar from "./common/nav-bar/NavBar";
-import Loading from "./common/Loading";
+import { Top, NavBar, FullLoading } from "@/common";
 
 function App() {
   return (
     <div className="App" style={{ height: "100vh" }}>
       <Top />
-      <Suspense fallback={<Loading />}>
-        <Routes />
-      </Suspense>
+      <main className="wrapper">
+        <Suspense fallback={<FullLoading />}>
+          <Routes />
+        </Suspense>
+      </main>
       <NavBar />
     </div>
   );

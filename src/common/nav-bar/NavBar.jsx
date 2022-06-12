@@ -25,7 +25,7 @@ const Nav = styled.nav`
   justify-content: center;
   box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
-  background-color: #272731;
-  color: #58595e;
+  background-color: var(--tab-bg-color);
+  color: var(--tab-text-color);
   opacity: 0.95;
 `;

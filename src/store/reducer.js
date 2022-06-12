@@ -1,9 +1,11 @@
 import { combineReducers } from "redux";
 
-import RecommendSlice from "@/pages/recommend/recommendSlice";
+import recommendSlice from "@/pages/recommend/recommendSlice";
+import artistSlice from "@/pages/artist/artistSlice";
 
 const rootReducer = combineReducers({
-  recommend: RecommendSlice,
+  recommend: recommendSlice,
+  artist: artistSlice,
 });
 
 export default rootReducer;
