@@ -19,21 +19,23 @@ const Scroll = forwardRef((props, ref) => {
   const [bScroll, setBScroll] = useState(null);
 
   const {
-    probeType = 0,
+    click = true,
+    probeType = 3,
     pullUpLoad = false,
     pullDownRefresh = false,
     useTransition = false,
-    pullUp,
-    pullDown,
-    handleScroll,
-    handleScrollEnd,
-    enterThreshold,
-    leaveThreshold,
+    onPullUp,
+    onPullDown,
+    onScroll,
+    onScrollEnd,
+    onEnterThreshold,
+    onLeaveThreshold,
   } = props;
 
   //初始化BetterScroll
   useEffect(() => {
     const bScroll = new BScroll(wrapperRef.current, {
+      click,
       probeType,
       pullUpLoad,
       pullDownRefresh,
@@ -46,23 +48,23 @@ const Scroll = forwardRef((props, ref) => {
       setBScroll(null);
     };
     // eslint-disable-next-line
-  }, []);
+  }, [probeType]);
 
   const handlePullUp = useMemo(() => {
-    return debounce(pullUp, 300);
-  }, [pullUp]);
+    return debounce(onPullUp, 300);
+  }, [onPullUp]);
 
   const handlePullDown = useMemo(() => {
-    return debounce(pullDown, 300);
-  }, [pullDown]);
+    return debounce(onPullDown, 300);
+  }, [onPullDown]);
 
   const handleEnterThreshold = useMemo(() => {
-    return debounce(enterThreshold, 300);
-  }, [enterThreshold]);
+    return debounce(onEnterThreshold, 300);
+  }, [onEnterThreshold]);
 
   const handleLeaveThreshold = useMemo(() => {
-    return debounce(leaveThreshold, 300);
-  }, [leaveThreshold]);
+    return debounce(onLeaveThreshold, 300);
+  }, [onLeaveThreshold]);
 
   // 上拉加载
   useEffect(() => {
@@ -98,7 +100,6 @@ const Scroll = forwardRef((props, ref) => {
     });
 
     bScroll.on("enterThreshold", handleEnterThreshold);
-
     bScroll.on("leaveThreshold", handleLeaveThreshold);
 
     return () => {
@@ -110,29 +111,27 @@ const Scroll = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (!bScroll) return;
-    bScroll.on("scroll", handleScroll);
-    bScroll.on("scrollEnd", handleScrollEnd);
+    bScroll.on("scroll", onScroll);
+    bScroll.on("scrollEnd", onScrollEnd);
 
     return () => {
       bScroll.off("scroll");
       bScroll.off("scrollEnd");
     };
-  }, [bScroll, handleScroll, handleScrollEnd]);
+  }, [bScroll, onScroll, onScrollEnd]);
 
-  useImperativeHandle(ref, () => {
-    return {
-      refresh: () => {
-        console.log("refresh");
-        bScroll?.refresh();
-      },
-      scrollTo: (x, y, time) => {
-        bScroll?.scrollTo(x, y, time);
-      },
-      scrollToElement: (ele, time) => {
-        bScroll?.scrollToElement(ele, time);
-      },
-    };
-  });
+  useImperativeHandle(ref, () => ({
+    refresh: () => {
+      console.log("refresh");
+      bScroll?.refresh();
+    },
+    scrollTo: (x, y, time) => {
+      bScroll?.scrollTo(x, y, time);
+    },
+    scrollToElement: (ele, time) => {
+      bScroll?.scrollToElement(ele, time);
+    },
+  }));
 
   return (
     <div style={{ height: "100%", overflow: "hidden" }} ref={wrapperRef}>

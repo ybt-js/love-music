@@ -18,3 +18,7 @@ root.render(
     </Provider>
   </React.StrictMode>,
 );
+
+document.body.addEventListener("touchmove", e => e.preventDefault(), {
+  passive: false,
+});

@@ -1,37 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const NAV_ITEM_HEIGHT = 16;
 
 function SideNav(props) {
-  const { data, navTouchStart, navTouchMove, navTouchEnd } = props;
-  const [curIdx, setCurIdx] = useState(0);
-  const [endIdx, setEndIdx] = useState(0);
+  const navRef = useRef();
+  const { data, curIdx, navTouchStart, navTouchMove, navTouchEnd } = props;
+  const [startIdx, setStartIdx] = useState(0);
   const [showTip, setShowTip] = useState(false);
   const [startPageY, setStartPageY] = useState(0);
+
+  useEffect(() => {
+    const navEle = navRef.current;
+    navEle.addEventListener("touchmove", handleTouchMove, { passive: false });
+    return () => {
+      navEle.removeEventListener("touchmove", handleTouchMove);
+    };
+    // eslint-disable-next-line
+  }, [startPageY]);
 
   const handleTouchStart = e => {
     e.stopPropagation();
     const startIdx = Number(e.target.getAttribute("data-index"));
-    setCurIdx(startIdx);
-    setEndIdx(startIdx);
+    setStartIdx(startIdx);
     setShowTip(true);
     setStartPageY(e.touches[0].pageY);
     navTouchStart(startIdx);
   };
 
   const handleTouchMove = e => {
+    e.preventDefault();
     e.stopPropagation();
+
     const delta = e.touches[0].pageY - startPageY;
-    let endIdx = curIdx + Math.round(delta / NAV_ITEM_HEIGHT);
+    let endIdx = startIdx + Math.round(delta / NAV_ITEM_HEIGHT);
 
     if (endIdx < 0) {
       endIdx = 0;
     } else if (endIdx > data.length - 1) {
       endIdx = data.length - 1;
     }
-    setEndIdx(endIdx);
     navTouchMove(endIdx);
+    // eslint-disable-next-line
   };
 
   const handleTouchEnd = e => {
@@ -40,16 +50,20 @@ function SideNav(props) {
     navTouchEnd?.();
   };
   return (
-    <Wrap>
-      <ul
-        className="side-bar"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+    <Wrap
+      ref={navRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <ul className="side-bar">
         {data.map((item, index) => (
-          <li className="side-bar-item" key={item} data-index={index}>
-            {endIdx === index && showTip && (
+          <li
+            className={"side-bar-item" + (curIdx === index ? " cur" : "")}
+            key={item}
+            data-index={index}
+          >
+            {curIdx === index && showTip && (
               <div className="tip-box">
                 <span className="tip-text">{item}</span>
               </div>
@@ -70,19 +84,26 @@ const Wrap = styled.div`
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
-  padding-right: 5px;
+  padding: 0 5px;
   z-index: 100;
 
   .side-bar {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
-    padding: 10px 0;
   }
 
   .side-bar-item {
     position: relative;
     padding: 0 5px;
     line-height: 16px;
+
+    &:first-child {
+      padding-top: 10px;
+    }
+
+    &:last-child {
+      padding-bottom: 10px;
+    }
 
     .tip-box {
       width: 40px;
@@ -105,7 +126,7 @@ const Wrap = styled.div`
     }
   }
 
-  .current {
+  .cur {
     color: var(--theme-color);
   }
 `;

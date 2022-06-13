@@ -84,8 +84,8 @@ function Recommend() {
     <Scroll
       ref={bsRef}
       probeType={3}
-      pullUp={loadMoreData}
-      pullDown={refreshData}
+      onPullUp={loadMoreData}
+      onPullDown={refreshData}
       pullUpLoad
       pullDownRefresh
     >

@@ -1,36 +1,45 @@
-import React from 'react'
-import styled from 'styled-components'
-import { handleImageSize } from '@/utils'
+import React from "react";
+import styled from "styled-components";
+import { handleImageSize } from "@/utils";
 
 function ArtistItem(props) {
-  const { title, data, minHeight } = props
+  const { title, data, minHeight, onClick } = props;
+
+  const handleClick = e => {
+    const index = e.target.getAttribute("data-index");
+    const artist = data[index];
+    onClick(artist);
+  };
+
   return (
     <Wrap minHeight={minHeight}>
       <h3 className="title">
         <span>{title}</span>
       </h3>
-      <ul className="artists">
-        {
-          data?.map((artist) => (
-            <li className='artist' key={artist.id}>
-              <div className="artist-img">
-                <img src={handleImageSize(artist.picUrl, 100)} alt="" loading='lazy' />
-              </div>
-              <div className="name">
-                <span>{artist.name}</span>
-              </div>
-            </li>
-          ))
-        }
+      <ul className="artist-list" onClick={handleClick}>
+        {data?.map((artist, index) => (
+          <li className="artist" key={artist.id} data-index={index}>
+            <div className="artist-img">
+              <img
+                src={handleImageSize(artist.picUrl, 100)}
+                alt=""
+                loading="lazy"
+              />
+            </div>
+            <div className="name">
+              <span>{artist.name}</span>
+            </div>
+          </li>
+        ))}
       </ul>
     </Wrap>
-  )
+  );
 }
 
-export default ArtistItem
+export default ArtistItem;
 
 const Wrap = styled.div`
-  min-height: ${(props) => props.minHeight}px;
+  min-height: ${props => props.minHeight}px;
 
   .title {
     position: sticky;
@@ -46,7 +55,7 @@ const Wrap = styled.div`
     }
   }
 
-  .artist{
+  .artist {
     display: flex;
     align-items: center;
 
@@ -60,5 +69,4 @@ const Wrap = styled.div`
       }
     }
   }
-
-`
+`;
