@@ -35,6 +35,19 @@ function Recommend() {
     dispatch(fetchSongList(33));
   }, [dispatch]);
 
+  const hotSongSlice = useMemo(
+    () => hotSong.slice(hotNum, hotNum + DISPLAY_COUNT),
+    [hotSong, hotNum],
+  );
+  const newSongSlice = useMemo(
+    () => newSong.slice(newNum, newNum + DISPLAY_COUNT),
+    [newSong, newNum],
+  );
+  const handleImgLoaded = useMemo(
+    () => debounce(() => bsRef.current.refresh(), 300),
+    [],
+  );
+
   const loadMoreData = async finishPullUp => {
     setLoading(true);
     if (songList.length === MAX_LIMIT) return;
@@ -74,12 +87,6 @@ function Recommend() {
     });
   };
 
-  const handleImgLoaded = useMemo(() => {
-    return debounce(() => {
-      bsRef.current.refresh();
-    }, 300);
-  }, []);
-
   return (
     <Scroll
       ref={bsRef}
@@ -88,16 +95,11 @@ function Recommend() {
       onPullDown={refreshData}
       pullUpLoad
       pullDownRefresh
+      style={{ padding: "0 5%" }}
     >
       <PullDownLoading loading={fetching} succeed={succeed} />
-      <Songs
-        title="热歌推荐"
-        playlist={hotSong.slice(hotNum, hotNum + DISPLAY_COUNT)}
-      />
-      <Songs
-        title="新歌推荐"
-        playlist={newSong.slice(newNum, newNum + DISPLAY_COUNT)}
-      />
+      <Songs title="热歌推荐" playlist={hotSongSlice} />
+      <Songs title="新歌推荐" playlist={newSongSlice} />
       <Songs
         title="精选歌单"
         playlist={songList}

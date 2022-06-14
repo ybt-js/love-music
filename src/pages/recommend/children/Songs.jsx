@@ -66,7 +66,6 @@ export default Songs;
 
 const SongsWrap = styled.div`
   min-height: 310px;
-  padding: 0 5%;
   margin-bottom: 10px;
   // text-align: center;
   .top-title {

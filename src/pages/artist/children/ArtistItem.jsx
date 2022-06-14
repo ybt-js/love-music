@@ -26,7 +26,7 @@ function ArtistItem(props) {
                 loading="lazy"
               />
             </div>
-            <div className="name">
+            <div className="artist-name">
               <span>{artist.name}</span>
             </div>
           </li>
@@ -58,10 +58,11 @@ const Wrap = styled.div`
   .artist {
     display: flex;
     align-items: center;
+    height: 70px;
 
     .artist-img {
       flex: 0 0 50px;
-      padding: 10px 20px;
+      padding: 0 15px;
 
       img {
         height: 50px;

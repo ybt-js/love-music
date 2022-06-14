@@ -30,6 +30,7 @@ const Scroll = forwardRef((props, ref) => {
     onScrollEnd,
     onEnterThreshold,
     onLeaveThreshold,
+    style,
   } = props;
 
   //初始化BetterScroll
@@ -134,7 +135,10 @@ const Scroll = forwardRef((props, ref) => {
   }));
 
   return (
-    <div style={{ height: "100%", overflow: "hidden" }} ref={wrapperRef}>
+    <div
+      style={{ height: "100%", overflow: "hidden", ...style }}
+      ref={wrapperRef}
+    >
       <div className="content">{props.children}</div>
     </div>
   );
