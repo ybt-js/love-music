@@ -1,14 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 function Top() {
+  const navigate = useNavigate();
   return (
     <Header>
       <div className="content">
         <div className="top-title">
           <h1>Love Music</h1>
         </div>
-        <div className="search">
+        <div
+          className="search"
+          onClick={() => {
+            navigate("/search");
+          }}
+        >
           <span className="iconfont">&#xe6a0;</span>
         </div>
       </div>

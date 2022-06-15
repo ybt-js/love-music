@@ -198,7 +198,7 @@ export function fetchSearchSuggest(keywords) {
  * 获取热搜关键字
  * @returns
  */
-export function fetchHotKeys() {
+export function fetchHotKeywords() {
   return request.get("/search/hot/detail");
 }
 
