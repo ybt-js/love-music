@@ -1,40 +1,57 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { fetchHotKeywords } from "./searchSlice";
+import { fetchHotKeywords, fetchSearchSuggest } from "./searchSlice";
 
 import { SearchBox, SearchHot, SearchHistory, SearchSuggest } from "./children";
+import { debounce } from "@/utils";
 
 function Search() {
-  const { hotKeywords, searchRecords } = useSelector(state => ({
+  const [keywords, setKeywords] = useState("");
+  const { hotKeywords, searchRecords, searchSuggest } = useSelector(state => ({
     hotKeywords: state.search.hotKeywords,
     searchRecords: state.search.searchRecords,
+    searchSuggest: state.search.searchSuggest,
   }));
 
-  console.log(hotKeywords);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHotKeywords());
+  }, [dispatch]);
+
+  const debounceDispatch = debounce(dispatch, 300);
+  const handleChange = useCallback(value => {
+    setKeywords(value);
+    if (value === "" || !value.trim()) return;
+    debounceDispatch(fetchSearchSuggest(value));
+    // eslint-disable-next-line
   }, []);
+
+  const handleSearch = value => {
+    console.log(value);
+  };
+
+  const showRecords = searchRecords.length !== 0;
+  const showSuggest = keywords.trim();
 
   return (
     <Wrap>
       <SearchBox
+        keywords={keywords}
         defaultKeyword={"薛之谦"}
-        onChange={() => {
-          console.log("change");
-        }}
-        onSearch={() => {
-          console.log("搜索");
-        }}
+        onChange={handleChange}
+        onSearch={handleSearch}
       />
       <div className="main">
-        {searchRecords.length !== 0 && (
-          <SearchHistory records={searchRecords} />
+        {showSuggest ? (
+          <SearchSuggest suggests={searchSuggest} />
+        ) : (
+          <>
+            {showRecords && <SearchHistory records={searchRecords} />}
+            <SearchHot hotKeywords={hotKeywords} />
+          </>
         )}
-        <SearchHot hotKeywords={hotKeywords} />
-        <SearchSuggest />
       </div>
     </Wrap>
   );

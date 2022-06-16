@@ -89,6 +89,7 @@ const Wrap = styled.div`
       text-align: right;
       padding: 6px 0;
     }
+
     .control {
       min-width: 40px;
       font-size: 14px;

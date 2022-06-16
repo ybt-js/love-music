@@ -64,7 +64,7 @@ export function decentralization(webpackContext, exclude = /index/) {
 }
 
 /**
- *
+ * promise队列
  * @param {Array} inputs
  * @param {()=>Promise} promiseMaker
  */
@@ -83,4 +83,30 @@ export function promiseSequence(inputs, promiseMaker) {
   }
 
   return Promise.resolve([]).then(handleNextInput);
+}
+
+/**
+ * 关键字高亮
+ * @param {string} keywords 搜索关键字
+ * @param {Array} allMatch 匹配到的搜索建议列表
+ * @returns
+ */
+export function keywordsHighlightHandle(keywords, allMatch = []) {
+  const reg = new RegExp(keywords.trim());
+  const res = [];
+  for (let { keyword } of allMatch) {
+    const match = keyword.match(reg);
+    const start = keyword.substring(0, match.index);
+    const highlight = match[0];
+    const last = keyword.substring(highlight.length);
+
+    res.push({
+      start,
+      last,
+      highlight,
+      keyword,
+    });
+  }
+
+  return res;
 }
