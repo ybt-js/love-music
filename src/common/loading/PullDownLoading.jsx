@@ -16,15 +16,15 @@ function PullDownLoading(props) {
   const messageEle = <div className="message">数据已刷新</div>;
 
   return (
-    <Wrap>
+    <StyleWrap>
       <div className="content">{props.succeed ? messageEle : animateEle}</div>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default PullDownLoading;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   @keyframes bar-1 {
     0% {
       transform: scale(1, 0.6);

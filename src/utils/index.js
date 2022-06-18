@@ -96,17 +96,24 @@ export function keywordsHighlightHandle(keywords, allMatch = []) {
   const res = [];
   for (let { keyword } of allMatch) {
     const match = keyword.match(reg);
-    const start = keyword.substring(0, match.index);
-    const highlight = match[0];
-    const last = keyword.substring(highlight.length);
-
-    res.push({
-      start,
-      last,
-      highlight,
-      keyword,
-    });
+    const item = { keyword };
+    if (match === null) item.start = keyword;
+    else {
+      item.start = keyword.substring(0, match.index);
+      item.highlight = match[0];
+      item.last = keyword.substring(item.highlight.length);
+    }
+    res.push(item);
   }
 
   return res;
+}
+
+/**
+ * 处理歌手名字
+ * @param {Array} artists
+ * @returns
+ */
+export function handleArtistName(artists = []) {
+  return artists.map(artist => artist.name).join("/");
 }

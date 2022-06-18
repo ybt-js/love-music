@@ -2,13 +2,17 @@ import React from "react";
 import styled from "styled-components";
 
 function SearchHot(props) {
-  const { hotKeywords } = props;
+  const { hotKeywords, triggerSearch } = props;
   return (
-    <Wrap>
+    <StyleWrap>
       <h2 className="title">热门搜索</h2>
       <div className="hot-keywords">
         {hotKeywords?.map((info, index) => (
-          <div className="keywords-info" key={index}>
+          <div
+            className="keywords-info"
+            key={index}
+            onClick={() => triggerSearch(info.searchWord)}
+          >
             <span className="order">{index + 1}</span>
             <span className="text text-nowrap">{info.searchWord}</span>
             {info.iconUrl && (
@@ -20,13 +24,13 @@ function SearchHot(props) {
           </div>
         ))}
       </div>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default SearchHot;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   .title {
     font-size: 16px;
     padding: 6px 0;

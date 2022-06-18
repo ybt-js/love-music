@@ -4,21 +4,18 @@ import { handleImageSize } from "@/utils";
 
 function ArtistItem(props) {
   const { title, data, minHeight, onClick } = props;
-
-  const handleClick = e => {
-    const index = e.target.getAttribute("data-index");
-    const artist = data[index];
-    onClick(artist);
-  };
-
   return (
-    <Wrap minHeight={minHeight}>
+    <StyleWrap minHeight={minHeight}>
       <h3 className="title">
         <span>{title}</span>
       </h3>
-      <ul className="artist-list" onClick={handleClick}>
+      <ul className="artist-list">
         {data?.map((artist, index) => (
-          <li className="artist" key={artist.id} data-index={index}>
+          <li
+            className="artist"
+            key={artist.id}
+            onClick={() => onClick(artist)}
+          >
             <div className="artist-img">
               <img
                 src={handleImageSize(artist.picUrl, 100)}
@@ -32,13 +29,13 @@ function ArtistItem(props) {
           </li>
         ))}
       </ul>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default ArtistItem;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   min-height: ${props => props.minHeight}px;
 
   .title {

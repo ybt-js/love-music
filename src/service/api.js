@@ -5,7 +5,7 @@ import request from "./request";
  * @returns
  */
 export function fetchHotSong() {
-  return fetchSongList(3778678);
+  return fetchPlaylist(3778678);
 }
 
 /**
@@ -13,7 +13,7 @@ export function fetchHotSong() {
  * @returns
  */
 export function fetchNewSong() {
-  return fetchSongList(3779629);
+  return fetchPlaylist(3779629);
 }
 
 /**
@@ -48,6 +48,15 @@ export function fetchArtistList({ initial, limit = 5, ...reset }) {
  */
 export function fetchArtistHotSong(id) {
   return request.get("/artist/top/song", { id });
+}
+
+/**
+ * 获取歌手详情
+ * @param {number} id
+ * @returns
+ */
+export function fetchArtistDetail(id) {
+  return request.get("/artist/detail", { id });
 }
 
 /**
@@ -99,7 +108,7 @@ export function fetchAlbum(id) {
  * @param {number} id
  * @returns
  */
-export function fetchSongList(id) {
+export function fetchPlaylist(id) {
   return request.get("playlist/detail", { id });
 }
 

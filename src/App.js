@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Routes from "./router";
 
 import { Top, NavBar, FullLoading } from "@/common";
+import { Player } from "components";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         </Suspense>
       </main>
       <NavBar />
+      <Player />
     </div>
   );
 }

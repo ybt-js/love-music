@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/service";
 import { keywordsHighlightHandle } from "@/utils";
+import { localCache } from "@/utils/storage";
 
 export const fetchHotKeywords = createAsyncThunk(
   "search/fetchSearchHotKeywords",
@@ -19,16 +20,45 @@ export const fetchSearchSuggest = createAsyncThunk(
   },
 );
 
+export const fetchSearchResults = createAsyncThunk(
+  "search/fetchSearchResults",
+  async keywords => {
+    //todo 获取搜索结果
+  },
+);
+
 const searchSlice = createSlice({
   name: "search",
   initialState: {
     hotKeywords: [],
-    searchRecords: ["薛之谦", "陈奕迅", "飘向北方"],
+    searchRecords: [],
     searchSuggest: [],
   },
   reducers: {
-    changeSearchRecords: (state, action) => {
-      //todo 修改历史记录
+    fetchSearchRecords: (state, action) => {
+      const records = localCache.getItem("searchRecords");
+      state.searchRecords = records || [];
+    },
+    addSearchRecords: (state, action) => {
+      const keywords = action.payload;
+      const filtered = state.searchRecords.filter(
+        (item, index) => item !== keywords && index < 11,
+      );
+      const records = [keywords, ...filtered];
+      state.searchRecords = records;
+      localCache.setItem("searchRecords", records);
+    },
+    deleteSearchRecords: (state, action) => {
+      const keywords = action.payload;
+      const records = state.searchRecords.filter(
+        (item, index) => item !== keywords && index < 11,
+      );
+      state.searchRecords = records;
+      localCache.setItem("searchRecords", records);
+    },
+    clearSearchRecords: (state, action) => {
+      state.searchRecords = [];
+      localCache.removeItem("searchRecords");
     },
   },
   extraReducers: builder => {
@@ -41,6 +71,11 @@ const searchSlice = createSlice({
   },
 });
 
-export const { changeSearchHistory } = searchSlice.actions;
+export const {
+  fetchSearchRecords,
+  addSearchRecords,
+  deleteSearchRecords,
+  clearSearchRecords,
+} = searchSlice.actions;
 
 export default searchSlice.reducer;

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { fetchHotSong, fetchNewSong, fetchSongList } from "./recommendSlice";
+import { fetchSongUrl } from '@/components/player/playerSlice'
 
 import { debounce } from "@/utils";
 import { Scroll, PullDownLoading } from "@/common";
@@ -27,7 +29,7 @@ function Recommend() {
     newSong: state.recommend.newSong,
     songList: state.recommend.songList,
   }));
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHotSong());
@@ -36,15 +38,15 @@ function Recommend() {
   }, [dispatch]);
 
   const hotSongSlice = useMemo(
-    () => hotSong.slice(hotNum, hotNum + DISPLAY_COUNT),
+    () => hotSong.tracks?.slice(hotNum, hotNum + DISPLAY_COUNT),
     [hotSong, hotNum],
   );
   const newSongSlice = useMemo(
-    () => newSong.slice(newNum, newNum + DISPLAY_COUNT),
+    () => newSong.tracks?.slice(newNum, newNum + DISPLAY_COUNT),
     [newSong, newNum],
   );
   const handleImgLoaded = useMemo(
-    () => debounce(() => bsRef.current.refresh(), 300),
+    () => debounce(() => bsRef.current?.refresh(), 300),
     [],
   );
 
@@ -67,14 +69,14 @@ function Recommend() {
     await promise();
     setHotNum(num => {
       let value = num + DISPLAY_COUNT;
-      if (num + DISPLAY_COUNT > hotSong.length) {
+      if (num + DISPLAY_COUNT > hotSong.tracks.length) {
         value = 0;
       }
       return value;
     });
     setNewNum(num => {
       let value = num + DISPLAY_COUNT;
-      if (num + DISPLAY_COUNT > newNum.length) {
+      if (num + DISPLAY_COUNT > newSong.tracks.length) {
         value = 0;
       }
       return value;
@@ -84,6 +86,20 @@ function Recommend() {
     // 保证二次下拉显示的是动画
     finishPullDown(() => {
       setSucceed(false);
+    });
+  };
+
+  const playMusic = song => {
+    // todo 播放音乐
+    dispatch(fetchSongUrl(song.id))
+  };
+
+  const jumpToPlaylist = song => {
+    navigate(`/playlist/${song.id}`, {
+      state: {
+        type: "song",
+        cover: song.picUrl || song.coverImgUrl,
+      },
     });
   };
 
@@ -98,14 +114,25 @@ function Recommend() {
       style={{ padding: "0 5%" }}
     >
       <PullDownLoading loading={fetching} succeed={succeed} />
-      <Songs title="热歌推荐" playlist={hotSongSlice} />
-      <Songs title="新歌推荐" playlist={newSongSlice} />
+      <Songs
+        title="热歌推荐"
+        playlist={hotSongSlice}
+        clickSong={playMusic}
+        clickMore={() => jumpToPlaylist(hotSong)}
+      />
+      <Songs
+        title="新歌推荐"
+        playlist={newSongSlice}
+        clickSong={playMusic}
+        clickMore={() => jumpToPlaylist(newSong)}
+      />
       <Songs
         title="精选歌单"
         playlist={songList}
         showMore={false}
         data={songList}
         onImgLoaded={handleImgLoaded}
+        clickSong={jumpToPlaylist}
       />
       {isLoading && (
         <p style={{ textAlign: "center", height: 30, lineHeight: "30px" }}>

@@ -6,7 +6,7 @@ export const fetchHotSong = createAsyncThunk(
   "recommend/fetchHotSong",
   async () => {
     const response = await api.fetchHotSong();
-    return response.playlist.tracks;
+    return response.playlist;
   },
 );
 
@@ -14,7 +14,7 @@ export const fetchNewSong = createAsyncThunk(
   "recommend/fetchNewSong",
   async () => {
     const response = await api.fetchNewSong();
-    return response.playlist.tracks;
+    return response.playlist;
   },
 );
 
@@ -26,16 +26,11 @@ export const fetchSongList = createAsyncThunk(
   },
 );
 
-export const fetchMoreSongList = createAsyncThunk(
-  "recommend/fetchMoreSongList",
-  async limit => {},
-);
-
 export const recommendSlice = createSlice({
   name: "recommend",
   initialState: {
-    hotSong: [],
-    newSong: [],
+    hotSong: {},
+    newSong: {},
     songList: [],
   },
   reducers: {

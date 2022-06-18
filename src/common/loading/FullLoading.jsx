@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 function FullLoading() {
   return (
-    <Wrap>
+    <StyleWrap>
       <div className="content">
         <div className="load">
           {[1, 2, 3].map((item, index) => (
@@ -13,13 +13,13 @@ function FullLoading() {
           <h3>正在加载...</h3>
         </div>
       </div>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default FullLoading;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;

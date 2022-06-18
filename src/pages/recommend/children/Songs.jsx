@@ -8,7 +8,6 @@ function Songs(props) {
     playlist,
     showMore = true,
     onImgLoaded,
-    // eslint-disable-next-line
     clickMore,
     clickSong,
   } = props;
@@ -18,25 +17,18 @@ function Songs(props) {
       <div className="top-title">
         <h2 name="title">{title}</h2>
         {showMore && (
-          <div
-            className="more"
-            onClick={() => {
-              //todo 跳转到歌单列表
-            }}
-          >
+          <div className="more" onClick={() => clickMore()}>
             <span>更多</span>
             <span className="iconfont">&#xe600;</span>
           </div>
         )}
       </div>
       <div className="song-list">
-        {playlist.map(song => (
+        {playlist?.map(song => (
           <div
             className="list-item"
             key={song.id}
-            onClick={() => {
-              //todo 跳转到歌单列表 or 播放歌曲
-            }}
+            onClick={() => clickSong(song)}
           >
             {song.playCount && (
               <div className="play-count">
@@ -47,9 +39,7 @@ function Songs(props) {
             <div className="img-box">
               <img
                 src={handleImageSize(song.al?.picUrl || song.picUrl, 200)}
-                onLoad={() => {
-                  onImgLoaded?.();
-                }}
+                onLoad={() => onImgLoaded?.()}
                 alt=""
                 loading="lazy"
               />

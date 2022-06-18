@@ -2,13 +2,18 @@ import React from "react";
 import styled from "styled-components";
 
 function SearchSuggest(props) {
-  const { suggests } = props;
+  const { suggests, triggerSearch } = props;
   //todo 搜索建议为空时添加提示
+
   return (
-    <Wrap>
-      <ul>
+    <StyleWrap>
+      <ul className="suggest-list">
         {suggests?.map(item => (
-          <li className="suggest-item" key={item.keyword}>
+          <li
+            className="suggest-item"
+            key={item.keyword}
+            onClick={() => triggerSearch(item.keyword)}
+          >
             <span className="iconfont">&#xe6a0;</span>
             <p className="match">
               <span className="start">{item.start}</span>
@@ -18,13 +23,13 @@ function SearchSuggest(props) {
           </li>
         ))}
       </ul>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default SearchSuggest;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   padding-top: 20px;
 
   .suggest-item {

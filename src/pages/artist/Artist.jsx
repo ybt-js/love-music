@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { fetchArtistList } from "./artistSlice";
 
 import { Scroll, SideNav } from "@/common";
@@ -26,7 +27,7 @@ function Artist() {
   const [offsetY, setOffsetY] = useState(0);
   const [showTitle, setShowTitle] = useState(true);
   const artistList = useSelector(state => state.artist.artistList);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchArtistList(params));
@@ -89,6 +90,13 @@ function Artist() {
 
   const artistItemClick = artist => {
     // todo 跳转到该歌手的歌曲列表
+    console.log(artist);
+    navigate(`/playlist/${artist.id}`, {
+      state: {
+        type: "artist",
+        cover: artist.picUrl,
+      },
+    });
   };
 
   return (

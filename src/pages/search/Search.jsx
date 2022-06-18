@@ -2,7 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { fetchHotKeywords, fetchSearchSuggest } from "./searchSlice";
+import {
+  fetchHotKeywords,
+  fetchSearchSuggest,
+  addSearchRecords,
+  fetchSearchResults,
+} from "./searchSlice";
 
 import { SearchBox, SearchHot, SearchHistory, SearchSuggest } from "./children";
 import { debounce } from "@/utils";
@@ -29,14 +34,15 @@ function Search() {
   }, []);
 
   const handleSearch = value => {
-    console.log(value);
+    //dispatch(fetchSearchResults(value))
+    dispatch(addSearchRecords(value));
   };
 
   const showRecords = searchRecords.length !== 0;
   const showSuggest = keywords.trim();
 
   return (
-    <Wrap>
+    <StyleWrap>
       <SearchBox
         keywords={keywords}
         defaultKeyword={"薛之谦"}
@@ -45,21 +51,29 @@ function Search() {
       />
       <div className="main">
         {showSuggest ? (
-          <SearchSuggest suggests={searchSuggest} />
+          <SearchSuggest
+            suggests={searchSuggest}
+            triggerSearch={handleSearch}
+          />
         ) : (
           <>
-            {showRecords && <SearchHistory records={searchRecords} />}
-            <SearchHot hotKeywords={hotKeywords} />
+            {showRecords && (
+              <SearchHistory
+                records={searchRecords}
+                triggerSearch={handleSearch}
+              />
+            )}
+            <SearchHot hotKeywords={hotKeywords} triggerSearch={handleSearch} />
           </>
         )}
       </div>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default Search;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;

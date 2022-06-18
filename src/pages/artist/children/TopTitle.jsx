@@ -4,15 +4,15 @@ import styled from "styled-components";
 function TopTitle(props) {
   const { offsetY, title } = props;
   return (
-    <Wrap offsetY={offsetY}>
+    <StyleWrap offsetY={offsetY}>
       <span>{title}</span>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default TopTitle;
 
-const Wrap = styled.h3`
+const StyleWrap = styled.h3`
   position: absolute;
   top: 0;
   left: 0;

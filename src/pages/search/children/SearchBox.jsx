@@ -7,19 +7,20 @@ function SearchBox(props) {
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    let value = keywords;
-    if (!keywords.trim()) {
+    let value = defaultKeyword;
+
+    if (keywords !== "") {
+      value = keywords;
+    }
+    if (keywords !== "" && !keywords.trim()) {
       //todo 提示请输入你要搜索的内容
       return;
-    }
-    if (keywords === "") {
-      value = defaultKeyword;
     }
     onSearch(value);
   };
 
   return (
-    <Wrap>
+    <StyleWrap>
       <div
         className="back"
         onClick={() => {
@@ -41,13 +42,13 @@ function SearchBox(props) {
       <div className="title" onClick={handleSearch}>
         <h3>搜索</h3>
       </div>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default SearchBox;
 
-const Wrap = styled.div`
+const StyleWrap = styled.header`
   display: flex;
   height: 44px;
   justify-content: space-between;

@@ -19,8 +19,8 @@ function Dialogs(props) {
     onConfirm,
   } = props;
 
-  const container = getContainer();
   useEffect(() => {
+    const container = getContainer();
     document.body.appendChild(container);
     return () => {
       document.body.removeChild(container);
@@ -28,7 +28,7 @@ function Dialogs(props) {
   }, []);
 
   const Element = (
-    <Wrap>
+    <StyleWrap>
       <div className="message">
         <p className="text">{message}</p>
         <div className="control">
@@ -40,7 +40,7 @@ function Dialogs(props) {
           </span>
         </div>
       </div>
-    </Wrap>
+    </StyleWrap>
   );
 
   return createPortal(Element, getContainer());
@@ -48,7 +48,7 @@ function Dialogs(props) {
 
 export default Dialogs;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;

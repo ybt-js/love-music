@@ -1,79 +1,76 @@
 import { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-
+import { deleteSearchRecords, clearSearchRecords } from "../searchSlice";
 import { Dialogs } from "@/common";
 
 function SearchHistory(props) {
-  const { records } = props;
+  const { records, triggerSearch } = props;
   const [deleting, setDeleting] = useState(false);
   const [showDialogs, setShowDialogs] = useState(false);
 
   const hideDialogs = useCallback(() => setShowDialogs(false), []);
+  const dispatch = useDispatch();
   const handleConfirm = () => {
-    //todo 清空历史记录
+    dispatch(clearSearchRecords());
     hideDialogs();
   };
 
-  const deleteSingleRecord = () => {
-    //todo 删除单条记录
+  const handleRecordClick = record => {
+    if (deleting) {
+      dispatch(deleteSearchRecords(record));
+    } else {
+      triggerSearch(record);
+    }
   };
 
-  const Icon = (
-    <div
-      className="icon"
-      onClick={() => {
-        setDeleting(true);
-      }}
-    >
-      <span className="iconfont">&#xe613;</span>
-    </div>
-  );
-  const Control = (
-    <div className="control">
-      <span className="clear" onClick={() => setShowDialogs(true)}>
-        全部删除
-      </span>
-      <span className="line">|</span>
-      <span className="complete" onClick={() => setDeleting(false)}>
-        完成
-      </span>
-    </div>
-  );
-
   return (
-    <Wrap>
+    <StyleWrap>
       <div className="header">
         <h2 className="title">搜索历史</h2>
-        {!deleting ? Icon : Control}
+        {!deleting ? (
+          <div className="icon" onClick={() => setDeleting(true)}>
+            <span className="iconfont">&#xe613;</span>
+          </div>
+        ) : (
+          <div className="control">
+            <span className="clear" onClick={() => setShowDialogs(true)}>
+              全部删除
+            </span>
+            <span className="line">|</span>
+            <span className="complete" onClick={() => setDeleting(false)}>
+              完成
+            </span>
+          </div>
+        )}
       </div>
       <ul className="records">
         {records?.map(record => (
           <li className="record" key={record}>
-            <p className="text text-nowrap">
+            <p
+              className="text text-nowrap"
+              onClick={() => handleRecordClick(record)}
+            >
               <span className="keyword">{record}</span>
-              {deleting && (
-                <span className="iconfont" onClick={deleteSingleRecord}>
-                  &#xe601;
-                </span>
-              )}
+              {deleting && <span className="iconfont">&#xe601;</span>}
             </p>
           </li>
         ))}
       </ul>
       {showDialogs && (
         <Dialogs
-          massage="是否清空所有搜索历史"
+          message="是否清空所有搜索历史？"
           onCancel={hideDialogs}
           onConfirm={handleConfirm}
         />
       )}
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default SearchHistory;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   .header {
     display: flex;
     align-items: center;

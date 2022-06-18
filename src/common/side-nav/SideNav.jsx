@@ -50,7 +50,7 @@ function SideNav(props) {
     navTouchEnd?.();
   };
   return (
-    <Wrap
+    <StyleWrap
       ref={navRef}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -72,13 +72,13 @@ function SideNav(props) {
           </li>
         ))}
       </ul>
-    </Wrap>
+    </StyleWrap>
   );
 }
 
 export default SideNav;
 
-const Wrap = styled.div`
+const StyleWrap = styled.div`
   position: fixed;
   right: 0;
   top: 50%;
