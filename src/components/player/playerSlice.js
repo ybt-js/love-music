@@ -26,6 +26,8 @@ export const playerSlice = createSlice({
     currentSong: {},
     recentPlaylist: [],
     lyric: [],
+    currentTime: 0,
+    duration: -1,
   },
   reducers: {
     changeFullScreen: (state, action) => {
@@ -39,6 +41,12 @@ export const playerSlice = createSlice({
     },
     changePlaylist: (state, action) => {
       state.playlist = action.payload;
+    },
+    changeCurrentTime: (state, action) => {
+      state.currentTime = action.payload;
+    },
+    changeDuration: (state, action) => {
+      state.duration = action.payload;
     },
   },
   extraReducers: builder => {
@@ -56,6 +64,8 @@ export const {
   changeFullScreen,
   changeMiniPlayer,
   changePlaylist,
+  changeCurrentTime,
+  changeDuration,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

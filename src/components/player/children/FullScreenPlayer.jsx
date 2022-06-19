@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { Top, Album, Lyric, Progress, Control } from "../children";
-
+import { Top, Album, Lyric, Control } from "../children";
+import { Progress } from '@/components'
 const imgUrl =
   "http://p3.music.126.net/wSMfGvFzOAYRU_yVIfquAA==/2946691248081599.jpg";
 
-function Player() {
+function Player(props) {
+
   return (
-    <StyleWrap>
+    <StyleWrap {...props}>
       <Top />
       {/* <Album /> */}
       <Lyric />
@@ -32,6 +33,7 @@ const StyleWrap = styled.div`
   z-index: 999;
   color: #ffffff;
   background-color: #222;
+  transition: all 0.3s;
 
   .player-bg {
     position: absolute;

@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import NavItem from "./NavItem";
+import NavPlayer from '@/components/player/children/NavPlayer'
 
 function NavBar() {
   return (
     <Nav>
       <NavItem link="/" icon="&#xe925;" title="推荐" />
       <NavItem link="/artist" icon="&#xe638;" title="歌手" />
+      <NavPlayer />
       <NavItem link="/toplist" icon="&#xe668;" title="排行" />
       <NavItem link="/profile" icon="&#xe628;" title="我的" />
     </Nav>

@@ -1,13 +1,15 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changePlaying } from './playerSlice'
+
+import { changeCurrentTime, changeDuration, changePlaying, } from './playerSlice'
 import { FullScreenPlayer } from "./children";
+import styled from "styled-components";
 
-
+import { debounce, } from '@/utils'
 
 function Player() {
   const audioRef = useRef()
-  const { lyric, playlist, playMode, playing, fullScreen, currentSong } = useSelector(
+  const { lyric, playlist, playMode, playing, fullScreen, currentSong, duration, } = useSelector(
     state => ({
       lyric: state.player.lyric,
       playlist: state.player.playlist,
@@ -15,14 +17,17 @@ function Player() {
       playing: state.player.playing,
       fullScreen: state.player.fullScreen,
       currentSong: state.player.currentSong,
+      duration: state.player.duration,
     }),
   );
 
   const dispatch = useDispatch()
   useEffect(() => {
+    if (!currentSong.url) return
     audioRef.current.src = currentSong.url
     playMusic()
   }, [currentSong])
+
 
 
   const playMusic = () => {
@@ -36,15 +41,47 @@ function Player() {
       });
   };
 
+  const lyricScroll = () => {
+
+  }
+
+  const handleTimeUpdate = useCallback((e) => {
+    const { currentTime } = e.target
+    dispatch(changeCurrentTime(currentTime))
+    if (duration < 0) {
+      dispatch(changeDuration(e.target.duration))
+    }
+    lyricScroll(currentTime)
+  }, [])
+
+  const handleEnded = (e) => {
+
+  }
+
+  const hide = {
+    transform: 'translate3d(0,100%,0)',
+    opacity: 0
+    // display: "none"
+  }
+  const show = {
+    transform: 'translate3d(0,0,0)',
+    opacity: 1
+    // display: 'block',
+  }
 
   return (
-    <>
-      {fullScreen && <FullScreenPlayer />}
-      <audio ref={audioRef} />
-    </>
+    <StyleWrap>
+      <FullScreenPlayer style={fullScreen ? show : hide} />
+      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onEnded={handleEnded} />
+    </StyleWrap>
   );
 }
 
 export default Player;
 
+const StyleWrap = styled.div`
 
+
+
+
+`

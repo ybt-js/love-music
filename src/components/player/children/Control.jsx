@@ -1,7 +1,13 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { changePlaying } from '../playerSlice'
 import styled from "styled-components";
 
 function Control() {
+  const { playing } = useSelector(state => ({
+    playing: state.player.playing
+  }))
+  const dispatch = useDispatch()
   return (
     <StyleWrap>
       <div className="mode">
@@ -13,9 +19,12 @@ function Control() {
         <span className="iconfont">&#xe603;</span>
       </div>
 
-      <div className="play">
-        <span className="iconfont">&#xe674;</span>
-        {/* <span className="iconfont" >&#xea8d;</span> */}
+      <div className="play" onClick={() => dispatch(changePlaying(!playing))}>
+        {
+          playing ?
+            (<span className="iconfont">&#xe674;</span>) :
+            (<span className="iconfont" >&#xea8d;</span>)
+        }
       </div>
 
       <div className="next">

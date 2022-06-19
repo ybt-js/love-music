@@ -1,13 +1,17 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { changeFullScreen } from '../playerSlice'
 import styled from "styled-components";
 
+
 function Top() {
+  const dispatch = useDispatch()
   return (
     <StyleWrap>
-      <div className="back">
+      <div className="back" onClick={() => dispatch(changeFullScreen(false))}>
         <span className="iconfont">&#xe641;</span>
       </div>
-      <h2 className="song-name text-nowrap" onClick={() => console.log(1)}>
+      <h2 className="song-name text-nowrap">
         演员
       </h2>
       <p className="artist-name">薛之谦</p>
