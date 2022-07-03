@@ -24,6 +24,23 @@ export function formatPlayCount(count) {
 }
 
 /**
+ * 格式化播放时间
+ * @param {number} time
+ * @returns
+ */
+export function formatPlayTime(time) {
+  let minute = (time / 60) | 0;
+  let second = time % 60 | 0;
+  if (minute.toString().length === 1) {
+    minute = "0" + minute;
+  }
+  if (second.toString().length === 1) {
+    second = "0" + second;
+  }
+  return `${minute}:${second}`;
+}
+
+/**
  * 防抖
  * @param {fun} func
  * @param {number} delay
@@ -38,6 +55,22 @@ export function debounce(func, delay = 0) {
     timer = setTimeout(() => {
       func?.apply(this, args);
     }, delay);
+  };
+}
+
+/**
+ * 节流
+ * @param {fun} func
+ * @param {number} delay
+ * @returns {fun}
+ */
+export function throttle(func, delay = 0) {
+  let start = Date.now();
+  return function (...args) {
+    const end = Date.now();
+    if (end - start < delay) return;
+    start = end;
+    func?.apply(this, args);
   };
 }
 

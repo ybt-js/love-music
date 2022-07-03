@@ -1,7 +1,5 @@
-import Top from "./Top";
-import Album from "./Album";
-import Lyric from "./Lyric";
-import Progress from "../../progress/Progress";
-import Control from "./Control";
 import FullScreenPlayer from "./FullScreenPlayer";
-export { Top, Album, Lyric, Progress, Control, FullScreenPlayer };
+import MiniPlayer from "./MiniPlayer";
+// import NavPlayer from "./NavPlayer";
+
+export { FullScreenPlayer, MiniPlayer };

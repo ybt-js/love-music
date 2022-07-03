@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { fetchPlaylist, fetchArtistHotSong } from "./playlistSlice";
-import { Scroll } from "@/common";
+import { fetchPlaylist, fetchArtistHotSong } from "@/redux/slice";
+import { Scroll } from "@/components";
 import { handleArtistName, handleImageSize } from "@/utils";
 
 function Playlist() {
@@ -20,7 +20,7 @@ function Playlist() {
     } else {
       dispatch(fetchPlaylist(id));
     }
-  }, [location, dispatch]);
+  }, [location, dispatch, id]);
 
   return (
     <StyleWrap cover={location.state.cover}>

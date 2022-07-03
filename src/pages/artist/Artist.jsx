@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { fetchArtistList } from "./artistSlice";
+import { fetchArtistList } from "@/redux/slice";
 
-import { Scroll, SideNav } from "@/common";
+import { Scroll, SideNav } from "@/components";
 import ArtistItem from "./children/ArtistItem";
 import TopTitle from "./children/TopTitle";
 

@@ -1,62 +1,69 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { changeCurrentTime, changeDuration, changePlaying, } from './playerSlice'
-import { FullScreenPlayer } from "./children";
+import { changePercent, changeDuration, changePlaying, switchSongAction, changePlayMode } from '@/redux/slice'
+import { FullScreenPlayer, MiniPlayer } from "./children";
 import styled from "styled-components";
 
-import { debounce, } from '@/utils'
 
 function Player() {
   const audioRef = useRef()
-  const { lyric, playlist, playMode, playing, fullScreen, currentSong, duration, } = useSelector(
-    state => ({
-      lyric: state.player.lyric,
-      playlist: state.player.playlist,
-      playMode: state.player.playMode,
-      playing: state.player.playing,
-      fullScreen: state.player.fullScreen,
-      currentSong: state.player.currentSong,
-      duration: state.player.duration,
-    }),
+  const [currTime, setCurrTime] = useState(0)
+  const { fullScreen, currentSong, currentTime, duration, playing, playMode } = useSelector(
+    state => (state.player)
   );
 
   const dispatch = useDispatch()
+
+  const playMusic = useCallback(async () => {
+    try {
+      await audioRef.current.play()
+      const totalTime = audioRef.current.duration
+      if (duration !== totalTime) {
+        dispatch(changeDuration(totalTime))
+      }
+      dispatch(changePlaying(true))
+    } catch (err) {
+      dispatch(changePlaying(false))
+    }
+  }, [dispatch, duration])
+
+  useEffect(() => {
+    if (!audioRef.current.src) return
+    audioRef.current.currentTime = currentTime
+    if (!playing) playMusic()
+  }, [currentTime, playMusic])
+
   useEffect(() => {
     if (!currentSong.url) return
     audioRef.current.src = currentSong.url
     playMusic()
-  }, [currentSong])
+  }, [currentSong, playMusic])
 
+  useEffect(() => {
+    if (!audioRef.current.src) return
+    if (playing) {
+      playMusic()
+    } else {
+      audioRef.current.pause()
+    }
+  }, [playing, playMusic])
 
-
-  const playMusic = () => {
-    audioRef.current
-      .play()
-      .then(() => {
-        dispatch(changePlaying(true))
-      })
-      .catch(() => {
-        dispatch(changePlaying(false))
-      });
-  };
-
-  const lyricScroll = () => {
-
+  const switchSong = (index) => {
+    if (!audioRef.current.src) return
+    dispatch(switchSongAction(index))
+  }
+  const switchPlayMode = () => {
+    const mode = (playMode + 1) % 3
+    dispatch(changePlayMode(mode))
   }
 
   const handleTimeUpdate = useCallback((e) => {
-    const { currentTime } = e.target
-    dispatch(changeCurrentTime(currentTime))
-    if (duration < 0) {
-      dispatch(changeDuration(e.target.duration))
-    }
-    lyricScroll(currentTime)
-  }, [])
+    const { currentTime, duration } = e.target
+    dispatch(changePercent(currentTime / duration))
+    setCurrTime(currentTime)
+  }, [dispatch])
 
-  const handleEnded = (e) => {
-
-  }
 
   const hide = {
     transform: 'translate3d(0,100%,0)',
@@ -71,8 +78,16 @@ function Player() {
 
   return (
     <StyleWrap>
-      <FullScreenPlayer style={fullScreen ? show : hide} />
-      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onEnded={handleEnded} />
+      {
+        true
+          ? <FullScreenPlayer
+            style={fullScreen ? show : hide}
+            currTime={currTime}
+            switchSong={switchSong}
+            switchPlayMode={switchPlayMode} />
+          : <MiniPlayer switchSong={switchSong} />
+      }
+      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onEnded={() => switchSong()} />
     </StyleWrap>
   );
 }

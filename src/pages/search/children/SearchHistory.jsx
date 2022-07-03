@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { deleteSearchRecords, clearSearchRecords } from "../searchSlice";
-import { Dialogs } from "@/common";
+import { deleteSearchRecords, clearSearchRecords } from "@/redux/slice";
+import { Dialogs } from "@/components";
 
 function SearchHistory(props) {
   const { records, triggerSearch } = props;

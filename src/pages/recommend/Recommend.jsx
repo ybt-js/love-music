@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchHotSong, fetchNewSong, fetchSongList } from "./recommendSlice";
-import { fetchSongUrl } from '@/components/player/playerSlice'
+import { fetchHotSong, fetchNewSong, fetchSongList, changePlaylist, changeCurrentIndex } from "@/redux/slice";
+
 
 import { debounce } from "@/utils";
-import { Scroll, PullDownLoading } from "@/common";
+import { Scroll, PullDownLoading } from "@/components";
 import Songs from "./children/Songs";
 
 const promise = () => {
@@ -89,12 +89,13 @@ function Recommend() {
     });
   };
 
-  const playMusic = song => {
+  const playMusic = (index, playlist) => {
     // todo 播放音乐
-    dispatch(fetchSongUrl(song.id))
+    dispatch(changePlaylist(playlist))
+    dispatch(changeCurrentIndex(index))
   };
 
-  const jumpToPlaylist = song => {
+  const jumpToPlaylist = (song) => {
     navigate(`/playlist/${song.id}`, {
       state: {
         type: "song",
@@ -103,6 +104,14 @@ function Recommend() {
     });
   };
 
+  const clickMore = (song) => {
+    jumpToPlaylist(song)
+  }
+
+  const clickPlaylist = (index, playlist) => {
+    const song = playlist[index]
+    jumpToPlaylist(song)
+  }
   return (
     <Scroll
       ref={bsRef}
@@ -118,13 +127,13 @@ function Recommend() {
         title="热歌推荐"
         playlist={hotSongSlice}
         clickSong={playMusic}
-        clickMore={() => jumpToPlaylist(hotSong)}
+        clickMore={() => clickMore(hotSong)}
       />
       <Songs
         title="新歌推荐"
         playlist={newSongSlice}
         clickSong={playMusic}
-        clickMore={() => jumpToPlaylist(newSong)}
+        clickMore={() => clickMore(newSong)}
       />
       <Songs
         title="精选歌单"
@@ -132,7 +141,7 @@ function Recommend() {
         showMore={false}
         data={songList}
         onImgLoaded={handleImgLoaded}
-        clickSong={jumpToPlaylist}
+        clickSong={clickPlaylist}
       />
       {isLoading && (
         <p style={{ textAlign: "center", height: 30, lineHeight: "30px" }}>

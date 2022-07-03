@@ -24,11 +24,11 @@ function Songs(props) {
         )}
       </div>
       <div className="song-list">
-        {playlist?.map(song => (
+        {playlist?.map((song, index) => (
           <div
             className="list-item"
             key={song.id}
-            onClick={() => clickSong(song)}
+            onClick={() => clickSong(index, playlist)}
           >
             {song.playCount && (
               <div className="play-count">

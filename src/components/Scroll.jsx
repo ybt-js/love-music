@@ -9,10 +9,13 @@ import {
 import BScroll from "@better-scroll/core";
 import PullUp from "@better-scroll/pull-up";
 import PullDown from "@better-scroll/pull-down";
+import ObserveDOM from '@better-scroll/observe-dom'
+
 import { debounce } from "@/utils";
 
 BScroll.use(PullUp);
 BScroll.use(PullDown);
+BScroll.use(ObserveDOM)
 
 const Scroll = forwardRef((props, ref) => {
   const wrapperRef = useRef();
@@ -21,6 +24,7 @@ const Scroll = forwardRef((props, ref) => {
   const {
     click = true,
     probeType = 3,
+    ObserveDOM = false,
     pullUpLoad = false,
     pullDownRefresh = false,
     useTransition = false,
@@ -38,6 +42,7 @@ const Scroll = forwardRef((props, ref) => {
     const bScroll = new BScroll(wrapperRef.current, {
       click,
       probeType,
+      ObserveDOM,
       pullUpLoad,
       pullDownRefresh,
       useTransition,

@@ -2,17 +2,16 @@ import { React } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components'
 import { CircleProgress } from '@/components'
-import { changeFullScreen } from '../playerSlice'
+import { changeFullScreen } from '@/redux/slice'
 
 const imgUrl =
   "http://p3.music.126.net/wSMfGvFzOAYRU_yVIfquAA==/2946691248081599.jpg";
 function NavPlayer() {
-  const { currentTime, duration, playing } = useSelector(state => ({
-    currentTime: state.player.currentTime,
-    duration: state.player.duration,
+  const { percent, playing } = useSelector(state => ({
+    percent: state.player.percent,
     playing: state.player.playing
   }))
-  const percent = currentTime / duration
+
   const dispatch = useDispatch()
   return (
     <StyleWrap onClick={() => dispatch(changeFullScreen(true))}>

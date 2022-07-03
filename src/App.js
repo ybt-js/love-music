@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import Routes from "./router";
 
-import { Top, NavBar, FullLoading } from "@/common";
-import { Player } from "components";
+import { Top, Player, NavBar, FullLoading } from "@/components";
 
 function App() {
   return (

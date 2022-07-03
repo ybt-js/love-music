@@ -1,10 +1,10 @@
 import { useRef, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchToplist } from "./toplistSlice";
+import { fetchToplist } from "@/redux/slice";
 
 import { debounce } from "@/utils";
 
-import { Scroll } from "@/common";
+import { Scroll } from "@/components";
 import OfficialRank from "./children/OfficialRank";
 import HandpickRank from "./children/HandpickRank";
 

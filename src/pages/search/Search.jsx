@@ -7,7 +7,7 @@ import {
   fetchSearchSuggest,
   addSearchRecords,
   fetchSearchResults,
-} from "./searchSlice";
+} from "@/redux/slice";
 
 import { SearchBox, SearchHot, SearchHistory, SearchSuggest } from "./children";
 import { debounce } from "@/utils";
